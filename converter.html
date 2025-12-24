@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Converter - PixelNexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #020617; color: white; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; }
+        
+        .header { width: 100%; max-width: 600px; display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .btn-back { color: #94a3b8; text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
+        .btn-back:hover { color: white; }
+
+        .container { background: #1e293b; padding: 40px; border-radius: 20px; width: 100%; max-width: 600px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        
+        .btn { width: 100%; padding: 15px; background: #a78bfa; color: black; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; margin-top: 25px; transition: 0.3s; }
+        .btn:hover { background: #8b5cf6; }
+        
+        select { padding: 12px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #334155; outline: none; margin-left: 10px; }
+        input[type=file] { margin: 20px 0; color: #cbd5e1; }
+        
+        .ad-banner { width: 100%; max-width: 728px; height: 90px; background: #0f172a; margin: 30px 0; border: 1px dashed #334155; display:flex; align-items:center; justify-content:center; color:#64748b; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> Home</a>
+        <span style="color:#a78bfa; font-weight:bold;">CONVERTER</span>
+    </div>
+
+    <div class="ad-banner">AdSense Banner</div>
+
+    <div class="container">
+        <h2 style="color:#a78bfa; margin-bottom:10px;">Format Converter</h2>
+        <p style="color:#94a3b8; font-size:0.9rem; margin-bottom:30px;">Convert images to JPG, PNG, or WEBP.</p>
+        
+        <input type="file" id="file">
+        <br>
+        <div style="margin-top:10px;">
+            Target Format: 
+            <select id="fmt">
+                <option value="image/jpeg">JPG</option>
+                <option value="image/png">PNG</option>
+                <option value="image/webp">WEBP</option>
+            </select>
+        </div>
+        
+        <button class="btn" onclick="convert()">Convert & Download</button>
+    </div>
+    
+    <div class="ad-banner">AdSense Banner</div>
+
+    <script>
+        function convert() {
+            const file = document.getElementById('file').files[0];
+            if(!file) return alert("Select file");
+            const fmt = document.getElementById('fmt').value;
+            
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (e) => {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width; canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    if(fmt === 'image/jpeg') { ctx.fillStyle = "#fff"; ctx.fillRect(0,0,canvas.width,canvas.height); }
+                    ctx.drawImage(img, 0, 0);
+                    
+                    const a = document.createElement('a');
+                    a.download = 'converted.' + fmt.split('/')[1];
+                    a.href = canvas.toDataURL(fmt);
+                    a.click();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

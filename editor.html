@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Editor - PixelNexus</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; background: #020617; color: white; display: flex; height: 100vh; font-family: 'Inter', sans-serif; overflow: hidden; }
+        
+        /* SIDEBAR */
+        .sidebar { width: 320px; background: #0f172a; padding: 25px; border-right: 1px solid #1e293b; display: flex; flex-direction: column; overflow-y: auto; z-index: 10; }
+        
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .back-link { color: #94a3b8; text-decoration: none; font-size: 0.85rem; display: flex; gap: 5px; align-items: center; }
+        .back-link:hover { color: white; }
+
+        .control-group { margin-bottom: 20px; }
+        label { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; color: #cbd5e1; }
+        input[type=range] { width: 100%; accent-color: #f472b6; cursor: pointer; }
+        
+        /* CANVAS AREA */
+        .main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #000; position: relative; }
+        canvas { max-width: 90%; max-height: 80vh; box-shadow: 0 0 50px rgba(255,255,255,0.05); }
+        
+        .toolbar { position: absolute; bottom: 30px; display: flex; gap: 15px; background: #1e293b; padding: 15px 25px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); }
+        button { padding: 10px 25px; border-radius: 25px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-upload { background: #334155; color: white; }
+        .btn-save { background: #f472b6; color: black; }
+        .btn-save:hover { background: #ec4899; }
+
+        /* AD SIDEBAR */
+        .ad-box { margin-top: auto; height: 250px; background: #1e293b; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px dashed #475569; color: #64748b; font-size: 0.8rem; }
+        
+        @media(max-width: 768px) {
+            body { flex-direction: column; overflow-y: auto; }
+            .sidebar { width: 100%; height: auto; order: 2; border-right: none; border-top: 1px solid #333; }
+            .main { height: 60vh; order: 1; }
+            .toolbar { bottom: 10px; padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="header-row">
+            <h2 style="color:#f472b6;">Editor</h2>
+            <a href="index.html" class="back-link"><i class="fas fa-times"></i> Exit</a>
+        </div>
+        
+        <div class="control-group"><label>Brightness</label><input type="range" id="bri" min="0" max="200" value="100"></div>
+        <div class="control-group"><label>Contrast</label><input type="range" id="con" min="0" max="200" value="100"></div>
+        <div class="control-group"><label>Saturation</label><input type="range" id="sat" min="0" max="200" value="100"></div>
+        <div class="control-group"><label>Blur</label><input type="range" id="blur" min="0" max="10" value="0"></div>
+        <div class="control-group"><label>Invert</label><input type="range" id="inv" min="0" max="100" value="0"></div>
+
+        <div class="ad-box">AdSense Vertical (300x250)</div>
+    </div>
+
+    <div class="main">
+        <canvas id="canvas"></canvas>
+        <div class="toolbar">
+            <input type="file" id="upload" hidden accept="image/*">
+            <button class="btn-upload" onclick="document.getElementById('upload').click()"><i class="fas fa-upload"></i> Load Image</button>
+            <button class="btn-save" onclick="save()"><i class="fas fa-download"></i> Download</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let img = new Image();
+
+        document.getElementById('upload').onchange = (e) => {
+            const reader = new FileReader();
+            reader.onload = (event) => { img.src = event.target.result; img.onload = render; }
+            reader.readAsDataURL(e.target.files[0]);
+        };
+
+        const inputs = document.querySelectorAll('input[type=range]');
+        inputs.forEach(i => i.oninput = render);
+
+        function render() {
+            if(!img.src) return;
+            canvas.width = img.width; canvas.height = img.height;
+            const filter = `brightness(${document.getElementById('bri').value}%) contrast(${document.getElementById('con').value}%) saturate(${document.getElementById('sat').value}%) blur(${document.getElementById('blur').value}px) invert(${document.getElementById('inv').value}%)`;
+            ctx.filter = filter;
+            ctx.drawImage(img, 0, 0);
+        }
+
+        function save() {
+            if(!img.src) return alert("Upload an image first!");
+            const a = document.createElement('a'); a.download = 'edited-pixelnexus.jpg'; a.href = canvas.toDataURL(); a.click();
+        }
+    </script>
+</body>
+</html>

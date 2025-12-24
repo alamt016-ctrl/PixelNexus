@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Generator - PixelNexus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { background: #020617; color: white; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; }
+        
+        /* HEADER FIX */
+        .header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
+        .back-btn { color: #94a3b8; text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .back-btn:hover { color: #fff; }
+        
+        .container { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; width: 100%; max-width: 450px; text-align: center; }
+        
+        input { width: 100%; padding: 15px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 8px; margin-bottom: 20px; outline: none; }
+        input:focus { border-color: #4ade80; }
+
+        .btn { width: 100%; padding: 15px; background: #4ade80; color: black; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        .btn:hover { background: #22c55e; }
+
+        .qr-box { margin: 20px auto; padding: 15px; background: white; width: 210px; height: 210px; display: flex; align-items: center; justify-content: center; border-radius: 10px; }
+        
+        .download-btn { display: none; color: #4ade80; margin-top: 15px; text-decoration: none; cursor: pointer; font-size: 0.9rem; }
+        .download-btn:hover { text-decoration: underline; }
+
+        /* ADS */
+        .ad-banner { width: 100%; max-width: 450px; height: 100px; background: #0f172a; margin: 20px 0; border: 1px dashed #334155; display:flex; align-items:center; justify-content:center; color:#64748b; font-size:0.8rem; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        <span style="font-family:'Orbitron'; color:#4ade80;">NEON QR</span>
+    </div>
+
+    <div class="ad-banner">Google AdSense (320x100)</div>
+
+    <div class="container">
+        <h2 style="margin-bottom:20px; color:#f8fafc;">Create QR Code</h2>
+        <input type="text" id="qrText" placeholder="Enter Website URL or Text">
+        <button class="btn" onclick="generateQR()">Generate Code</button>
+        
+        <div class="qr-box"><div id="qrcode"></div></div>
+        
+        <a id="dwnBtn" class="download-btn"><i class="fas fa-download"></i> Download PNG</a>
+    </div>
+
+    <div class="ad-banner">Google AdSense (Square)</div>
+
+    <script>
+        const qrContainer = document.getElementById("qrcode");
+        let qrcode = new QRCode(qrContainer, { text: "PixelNexus", width: 180, height: 180 });
+
+        function generateQR() {
+            const text = document.getElementById("qrText").value;
+            if(!text) return alert("Please enter text!");
+            qrContainer.innerHTML = "";
+            qrcode = new QRCode(qrContainer, { text: text, width: 180, height: 180 });
+            
+            setTimeout(() => {
+                const img = qrContainer.querySelector("img");
+                if(img) {
+                    const btn = document.getElementById("dwnBtn");
+                    btn.href = img.src; btn.download = "qrcode.png"; btn.style.display = "inline-block";
+                }
+            }, 500);
+        }
+    </script>
+</body>
+</html>
